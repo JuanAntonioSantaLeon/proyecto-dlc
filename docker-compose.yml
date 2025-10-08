@@ -1,0 +1,37 @@
+services:
+  backend:
+    build: ./backend
+    container_name: dlc-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: dlc-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    container_name: dlc-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=dlc_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
